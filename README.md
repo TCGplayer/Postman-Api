@@ -12,13 +12,13 @@ After your keys are entered into the imported environment, there are two paths t
 
 If you don't want to authenticate against a store, skip to step 4.
 
-###1)
+### 1)
 Follow the [store authorization workflow](https://docs.tcgplayer.com/docs/store-authorization-workflow) until you have generated a store's authorization code.
-###2)
+### 2)
 Enter this code into your Postman environment under the storeAuthorizationCode variable.
-###3)
+### 3)
 Run the request for Store Authorization.  You don't need to copy anything from the response, the script handles it and loads the appropriate environment variables.
-###4)
+### 4)
 Run the request for Authenticate.
 
 After this is completed, you should be able to start diving in and running any of the other requests in the collection.  If you authenticated against a store, a great next step is to call Get Store Info so that you can verify that your store's information is returned correctly.
