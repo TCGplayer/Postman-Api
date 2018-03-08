@@ -1,0 +1,2108 @@
+{
+	"variables": [],
+	"info": {
+		"name": "TCGPlayer",
+		"_postman_id": "f36c019c-32fa-72d4-88fd-57ae2ba74dfd",
+		"description": "All of the requests usable through the current TCGPlayer API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authenticate",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var jsonResponse = JSON.parse(responseBody);",
+							"if (typeof jsonResponse.access_token !== 'undefined') {",
+							"    postman.setEnvironmentVariable(\"accessToken\", jsonResponse.access_token);",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "https://api.tcgplayer.com/token",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "X-Tcg-Access-Token",
+						"value": "{{X-Tcg-Access-Token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "grant_type=client_credentials&client_id={{publicId}}&client_secret={{privateId}}"
+				},
+				"description": "Get an authentication header"
+			},
+			"response": []
+		},
+		{
+			"name": "Store Authorization",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var jsonResponse = JSON.parse(responseBody);",
+							"if (typeof jsonResponse.results[0].authorizationKey !== 'undefined') {",
+							"    postman.setEnvironmentVariable(\"X-Tcg-Access-Token\", jsonResponse.results[0].authorizationKey);",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "https://api.tcgplayer.com/app/authorize/{{storeAuthorizationCode}}",
+				"method": "POST",
+				"header": [],
+				"body": {},
+				"description": "Authorize a store to link with the api"
+			},
+			"response": []
+		},
+		{
+			"name": "List All Categories",
+			"request": {
+				"url": {
+					"raw": "http://api.tcgplayer.com/{{version}}/catalog/categories?limit=100",
+					"protocol": "http",
+					"host": [
+						"api",
+						"tcgplayer",
+						"com"
+					],
+					"path": [
+						"{{version}}",
+						"catalog",
+						"categories"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "100",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get Category Details",
+			"request": {
+				"url": "http://api.tcgplayer.com/{{version}}/catalog/categories/18",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get Category Search Manifest",
+			"request": {
+				"url": "http://api.tcgplayer.com/{{version}}/catalog/categories/1/search/manifest",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": "Get a list of all available category searches"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Category Search Manifest",
+			"request": {
+				"url": {
+					"raw": "http://api.tcgplayer.com/{{version}}/catalog/products?categoryId=1",
+					"protocol": "http",
+					"host": [
+						"api",
+						"tcgplayer",
+						"com"
+					],
+					"path": [
+						"{{version}}",
+						"catalog",
+						"products"
+					],
+					"query": [
+						{
+							"key": "categoryId",
+							"value": "1",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"sort\": \"name\",\r\n    \"limit\": 100,\r\n    \"offset\": 0,\r\n    \"filters\": [\r\n    \t{ \"name\": \"name\", \"values\": [ \"ponder\" ] }\r\n    ]    \r\n}"
+				},
+				"description": "Searches a product catalog for a specific set of filters"
+			},
+			"response": []
+		},
+		{
+			"name": "Search Category Products (Advanced Search)",
+			"request": {
+				"url": "http://api.tcgplayer.com/{{version}}/catalog/categories/1/search",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"sort\": \"name\",\r\n    \"limit\": 100,\r\n    \"offset\": 0,\r\n    \"filters\": [\r\n    \t{ \"name\": \"Color\", \"values\": [ \"Blue\" ] },\r\n    \t{ \"name\": \"ProductName\", \"values\": [ \"Jace, the Mind Sculptor\" ] }\r\n    ]    \r\n}"
+				},
+				"description": "Searches a product catalog for a specific set of filters"
+			},
+			"response": []
+		},
+		{
+			"name": "Search Category Products (Advanced Search- All Sets)",
+			"request": {
+				"url": "http://api.tcgplayer.com/{{version}}/catalog/categories/1/search",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"sort\": \"name\",\r\n    \"limit\": 1000,\r\n    \"offset\": 0,\r\n    \"filters\": [\r\n    \t{ \"name\": \"SetName\", \"values\": [ \"10th Edition\" ] }\r\n    ]    \r\n}"
+				},
+				"description": "Searches a product catalog for a specific set of filters"
+			},
+			"response": []
+		},
+		{
+			"name": "Search Category Products (Advanced Search - Oracle Text)",
+			"request": {
+				"url": "http://api.tcgplayer.com/{{version}}/catalog/categories/1/search",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"sort\": \"name\",\r\n    \"limit\": 100,\r\n    \"offset\": 0,\r\n    \"filters\": [\r\n    \t{ \"name\": \"OracleText\", \"values\": [ \"untap up to two lands\" ] }\r\n    ]    \r\n}"
+				},
+				"description": "Searches a product catalog for a specific set of filters"
+			},
+			"response": []
+		},
+		{
+			"name": "List All Category Groups",
+			"request": {
+				"url": "http://api.tcgplayer.com/{{version}}/catalog/categories/18/groups",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "List All Category Rarities",
+			"request": {
+				"url": "http://api.tcgplayer.com/{{version}}/catalog/categories/1/rarities",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": "Get a list of all rarities"
+			},
+			"response": []
+		},
+		{
+			"name": "List All Category Printings",
+			"request": {
+				"url": "http://api.tcgplayer.com/{{version}}/catalog/categories/1/printings",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": "Get a list of all printings"
+			},
+			"response": []
+		},
+		{
+			"name": "List All Category Conditions",
+			"request": {
+				"url": "http://api.tcgplayer.com/{{version}}/catalog/categories/2/conditions",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": "Get a list of all conditions for a category"
+			},
+			"response": []
+		},
+		{
+			"name": "List All Category Languages",
+			"request": {
+				"url": "http://api.tcgplayer.com/{{version}}/catalog/categories/3/languages",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": "Get a list of all languages for a category"
+			},
+			"response": []
+		},
+		{
+			"name": "List All Category Media",
+			"request": {
+				"url": "http://api.tcgplayer.com/{{version}}/catalog/categories/1/media",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": "Get a list of all media for a category"
+			},
+			"response": []
+		},
+		{
+			"name": "List All Group Details",
+			"request": {
+				"url": {
+					"raw": "http://api.tcgplayer.com/{{version}}/catalog/groups?offset=0&limit=10&categoryId=1",
+					"protocol": "http",
+					"host": [
+						"api",
+						"tcgplayer",
+						"com"
+					],
+					"path": [
+						"{{version}}",
+						"catalog",
+						"groups"
+					],
+					"query": [
+						{
+							"key": "offset",
+							"value": "0",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "limit",
+							"value": "10",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "categoryId",
+							"value": "1",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"sort\": \"name\",\r\n    \"limit\": 200,\r\n    \"offset\": 0,\r\n    \"filters\": [\r\n    \t{ \"name\": \"ProductName\", \"values\": [ \"Opt\" ] }\r\n    ]    \r\n}"
+				},
+				"description": "Returns group information for a category"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Group Details",
+			"request": {
+				"url": "http://api.tcgplayer.com/{{version}}/catalog/groups/1",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"sort\": \"name\",\r\n    \"limit\": 200,\r\n    \"offset\": 0,\r\n    \"filters\": [\r\n    \t{ \"name\": \"ProductName\", \"values\": [ \"Opt\" ] }\r\n    ]    \r\n}"
+				},
+				"description": "Returns group information for a category"
+			},
+			"response": []
+		},
+		{
+			"name": "List All Group Media",
+			"request": {
+				"url": {
+					"raw": "http://api.tcgplayer.com/{{version}}/catalog/groups/1/media?categoryId=3",
+					"protocol": "http",
+					"host": [
+						"api",
+						"tcgplayer",
+						"com"
+					],
+					"path": [
+						"{{version}}",
+						"catalog",
+						"groups",
+						"1",
+						"media"
+					],
+					"query": [
+						{
+							"key": "categoryId",
+							"value": "3",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"sort\": \"name\",\r\n    \"limit\": 200,\r\n    \"offset\": 0,\r\n    \"filters\": [\r\n    \t{ \"name\": \"ProductName\", \"values\": [ \"Opt\" ] }\r\n    ]    \r\n}"
+				},
+				"description": "Returns media associated with an MTG group"
+			},
+			"response": []
+		},
+		{
+			"name": "List All Products",
+			"request": {
+				"url": {
+					"raw": "http://api.tcgplayer.com/{{version}}/catalog/products?categoryId=7&productTypes=Cards",
+					"protocol": "http",
+					"host": [
+						"api",
+						"tcgplayer",
+						"com"
+					],
+					"path": [
+						"{{version}}",
+						"catalog",
+						"products"
+					],
+					"query": [
+						{
+							"key": "categoryId",
+							"value": "7",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "productTypes",
+							"value": "Cards",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"sort\": \"name\",\r\n    \"limit\": 200,\r\n    \"offset\": 0,\r\n    \"filters\": [\r\n    \t{ \"name\": \"ProductName\", \"values\": [ \"Opt\" ] }\r\n    ]    \r\n}"
+				},
+				"description": "Returns products that match specific query strings."
+			},
+			"response": []
+		},
+		{
+			"name": "Get Product Details",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/pricing/product/1027",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"sort\": \"name\",\r\n    \"limit\": 100,\r\n    \"offset\": 0,\r\n    \"filters\": [\r\n    \t{ \"name\": \"name\", \"values\": [ \"ponder\" ] }\r\n    ]    \r\n}"
+				},
+				"description": "Searches a product catalog for a specific set of filters"
+			},
+			"response": []
+		},
+		{
+			"name": "List Product SKUs",
+			"request": {
+				"url": "http://api.tcgplayer.com/{{version}}/catalog/products/152944/productconditions",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": "List all available SKUs for a specified product"
+			},
+			"response": []
+		},
+		{
+			"name": "List Related Products",
+			"request": {
+				"url": "http://api.tcgplayer.com/{{version}}/catalog/products/15230/productsalsopurchased",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": "Returns products that commonly show up in the same orders as a specific product."
+			},
+			"response": []
+		},
+		{
+			"name": "List All Product Media Types",
+			"request": {
+				"url": "http://api.tcgplayer.com/{{version}}/catalog/products/126022/media",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": "List all media types associated with a product."
+			},
+			"response": []
+		},
+		{
+			"name": "Get SKU Details",
+			"request": {
+				"url": "http://api.tcgplayer.com/{{version}}/catalog/skus/2999708,255924",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": "Get details about a specific product SKU."
+			},
+			"response": []
+		},
+		{
+			"name": "List SuperConditions",
+			"request": {
+				"url": "http://api.tcgplayer.com/{{version}}/catalog/superconditions",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": "List conditions supported by TCGPlayer."
+			},
+			"response": []
+		},
+		{
+			"name": "List All ProductLists",
+			"request": {
+				"url": "http://api.tcgplayer.com/{{version}}/inventory/productlists",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": "Get a list of product lists"
+			},
+			"response": []
+		},
+		{
+			"name": "Get ProductList By Id",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/inventory/productlists/PRODUCTLISTID",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": "Get a list of inventory products by ID"
+			},
+			"response": []
+		},
+		{
+			"name": "Get ProductList By Key",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/inventory/productlists/PRODUCTLISTID",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": "Get a list of inventory products by Key"
+			},
+			"response": []
+		},
+		{
+			"name": "Create ProductList",
+			"request": {
+				"url": "http://api.tcgplayer.com/{{version}}/inventory/productlists",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n\t\t{\r\n\t\t\t\"quantity\": 2,\r\n\t\t\t\"productConditionId\": 21163\r\n\t\t},\r\n\t\t{\r\n\t\t\t\"quantity\": 7,\r\n\t\t\t\"productConditionId\": 3799\r\n\t\t}\r\n]"
+				},
+				"description": "Create a new product list"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Market Price by SKU",
+			"request": {
+				"url": "http://api.tcgplayer.com/{{version}}/pricing/product/15602",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "List Product Prices by Group",
+			"request": {
+				"url": "http://api.tcgplayer.com/{{version}}/pricing/group/370",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": "Get pricing data for a single item"
+			},
+			"response": []
+		},
+		{
+			"name": "List Product Market Prices",
+			"request": {
+				"url": "http://api.tcgplayer.com/{{version}}/pricing/product/83461,101491,130325,138608",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": "Get an entire group's price"
+			},
+			"response": []
+		},
+		{
+			"name": "List SKU Market Prices",
+			"request": {
+				"url": "http://api.tcgplayer.com/{{version}}/pricing/sku/2883545,1260372",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": "Get pricing for a SKU"
+			},
+			"response": []
+		},
+		{
+			"name": "List Product Buylist Prices",
+			"request": {
+				"url": "http://api.tcgplayer.com/{{version}}/pricing/buy/product/128661",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": "Get buylist pricing for a product id"
+			},
+			"response": []
+		},
+		{
+			"name": "List SKU Buylist Prices",
+			"request": {
+				"url": "http://api.tcgplayer.com/{{version}}/pricing/buy/sku/382537,382827",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": "Get buylist pricing for a product SKU"
+			},
+			"response": []
+		},
+		{
+			"name": "Get SKU Buylist Price",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/buylist/skuprices/4154",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": "Get SKU Buylist Price"
+			},
+			"response": []
+		},
+		{
+			"name": "List SKU Buylist Price",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/buylist/skuprices",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": "List SKU Buylist Price"
+			},
+			"response": []
+		},
+		{
+			"name": "Create SKU Buylist",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/buylist/skus/SKUID",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n\t{\n\t\t\"skuId\": \"SKUID\",\n\t\t\"price\": .01,\n\t\t\"quantity\": 0\n\t}\n]"
+				},
+				"description": "Create a new buylist price"
+			},
+			"response": []
+		},
+		{
+			"name": "Update SKU Buylist Price",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/buylist/skus/SKUID/price",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n\t{\n\t\t\"skuId\": \"SKUID\",\n\t\t\"price\": .01\n\t}\n]"
+				},
+				"description": "Create a new buylist price"
+			},
+			"response": []
+		},
+		{
+			"name": "Update SKU Buylist Quantity",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/buylist/skus/SKUID/price",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n\t{\n\t\t\"skuId\": \"SKUID\",\n\t\t\"quantity\": .01\n\t}\n]"
+				},
+				"description": "Update quantity for a buylist"
+			},
+			"response": []
+		},
+		{
+			"name": "Search Stores",
+			"request": {
+				"url": {
+					"raw": "https://api.tcgplayer.com/{{version}}/stores?name=Gamer",
+					"protocol": "https",
+					"host": [
+						"api",
+						"tcgplayer",
+						"com"
+					],
+					"path": [
+						"{{version}}",
+						"stores"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "Gamer",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": "Searches stores by parameters"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Free Shipping Option",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/freeshipping/settings",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": "Gets the current store's free shipping option that is associated with the Bearer Token."
+			},
+			"response": []
+		},
+		{
+			"name": "Get Category SKUs",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/categories/1/skus",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": "Gets SKUs that a store has listed by category."
+			},
+			"response": []
+		},
+		{
+			"name": "Get Store Address",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/address",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": "Gets the address of the currently authenticated store"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Store Feedback",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/feedback",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": "Return feedback information about the Store specified by the storeKey."
+			},
+			"response": []
+		},
+		{
+			"name": "Set Store Status",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/status/inactive",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": "Sets a store's status"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Customer Summary",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/customers/TOKEN",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": "Get information about a customer using a key taken from an order"
+			},
+			"response": []
+		},
+		{
+			"name": "Search Store Customers",
+			"request": {
+				"url": {
+					"raw": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/customers?name=\"Timmy\"",
+					"protocol": "https",
+					"host": [
+						"api",
+						"tcgplayer",
+						"com"
+					],
+					"path": [
+						"{{version}}",
+						"stores",
+						"{{storeKey}}",
+						"customers"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "\"Timmy\"",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": "Search a store for previous customers"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Customer Addresses",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/customers/TOKEN/addresses",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": "Returns the shipping addresses associated with a specific order's customers"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Customer Orders",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/customers/TOKEN/orders",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": "Returns the orders a specific customer has placed"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Store Info",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var jsonResponse = JSON.parse(responseBody);",
+							"if (typeof jsonResponse.results[0].storeKey !== 'undefined') {",
+							"    postman.setEnvironmentVariable(\"storeKey\", jsonResponse.results[0].storeKey);",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/self",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "X-Tcg-Access-Token",
+						"value": "4adcf3b3-5806-40ce-af46-273788fa661f",
+						"description": "",
+						"disabled": true
+					}
+				],
+				"body": {},
+				"description": "Return details about the store that is authorized."
+			},
+			"response": []
+		},
+		{
+			"name": "Get Store Info (other store)",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/self",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "X-Tcg-Access-Token",
+						"value": "4adcf3b3-5806-40ce-af46-273788fa661f",
+						"description": "",
+						"disabled": true
+					}
+				],
+				"body": {},
+				"description": "Return limited store information about stores denoted by keys"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Product Inventory Quantities",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/inventory/products/1245/quantity",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "X-Tcg-Access-Token",
+						"value": "4adcf3b3-5806-40ce-af46-273788fa661f",
+						"description": "",
+						"disabled": true
+					}
+				],
+				"body": {},
+				"description": "Return quantity for a specific productId"
+			},
+			"response": []
+		},
+		{
+			"name": "List Product Summary",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/inventory/products",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "X-Tcg-Access-Token",
+						"value": "4adcf3b3-5806-40ce-af46-273788fa661f",
+						"description": "",
+						"disabled": true
+					}
+				],
+				"body": {},
+				"description": "List a summary of products"
+			},
+			"response": []
+		},
+		{
+			"name": "List Product SKUs",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/inventory/products",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "X-Tcg-Access-Token",
+						"value": "4adcf3b3-5806-40ce-af46-273788fa661f",
+						"description": "",
+						"disabled": true
+					}
+				],
+				"body": {},
+				"description": "List a summary of product SKUs that are in the store"
+			},
+			"response": []
+		},
+		{
+			"name": "List Related Products",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/inventory/products/1026/relatedproducts",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "X-Tcg-Access-Token",
+						"value": "4adcf3b3-5806-40ce-af46-273788fa661f",
+						"description": "",
+						"disabled": true
+					}
+				],
+				"body": {},
+				"description": "List products often sold with a specific product"
+			},
+			"response": []
+		},
+		{
+			"name": "List Shipping Options",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/inventory/products/1026/shippingoptions",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "X-Tcg-Access-Token",
+						"value": "4adcf3b3-5806-40ce-af46-273788fa661f",
+						"description": "",
+						"disabled": true
+					}
+				],
+				"body": {},
+				"description": "List a store's shipping options"
+			},
+			"response": []
+		},
+		{
+			"name": "Get SKU Quantity",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/inventory/skus/15179/quantity",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "X-Tcg-Access-Token",
+						"value": "4adcf3b3-5806-40ce-af46-273788fa661f",
+						"description": "",
+						"disabled": true
+					}
+				],
+				"body": {},
+				"description": "List a store's shipping options"
+			},
+			"response": []
+		},
+		{
+			"name": "Increment SKU Inventory Quantity",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/inventory/skus/15179/quantity",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"quantity\": 1,\n\t\"channelId\": 1\n}"
+				},
+				"description": "Increase the amount of inventory a store has."
+			},
+			"response": []
+		},
+		{
+			"name": "Update SKU Inventory",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/inventory/skus/15179",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"quantity\": 1,\n\t\"channelId\": 2,\n\t\"price\": 6999\n}"
+				},
+				"description": "Update the amount and/or price of a SKU"
+			},
+			"response": []
+		},
+		{
+			"name": "Update SKU Inventory Price",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/inventory/skus/15179/price",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n  {\r\n    \"price\": 7000,\r\n    \"channelId\": 1\r\n  }\r\n]"
+				},
+				"description": "Update the price of a SKU"
+			},
+			"response": []
+		},
+		{
+			"name": "Batch Update Store SKU Prices",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/inventory/skus/batch",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n  {\r\n    \"skuId\": 15179,\r\n    \"price\": 7000,\r\n    \"channelId\": 1\r\n  },\r\n  {\r\n  \t\"skuId\": 21752,\r\n    \"price\": 7000,\r\n    \"channelId\": 1\r\n  }\r\n]"
+				},
+				"description": "Update the amount and/or price of a batch of SKUs"
+			},
+			"response": []
+		},
+		{
+			"name": "Update SKU Inventory Price",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/inventory/skus/15179/price",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n  {\r\n    \"skuId\": 15179,\r\n    \"price\": 7000,\r\n    \"channelId\": 1\r\n  },\r\n  {\r\n  \t\"skuId\": 21752,\r\n    \"price\": 7000,\r\n    \"channelId\": 1\r\n  }\r\n]"
+				},
+				"description": "Update current store's price for a SKU"
+			},
+			"response": []
+		},
+		{
+			"name": "List SKU List Price",
+			"request": {
+				"url": {
+					"raw": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/inventory/skuprices?offset=3&limit=500",
+					"protocol": "https",
+					"host": [
+						"api",
+						"tcgplayer",
+						"com"
+					],
+					"path": [
+						"{{version}}",
+						"stores",
+						"{{storeKey}}",
+						"inventory",
+						"skuprices"
+					],
+					"query": [
+						{
+							"key": "offset",
+							"value": "3",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "limit",
+							"value": "500",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n  {\r\n    \"skuId\": 15179,\r\n    \"price\": 7000,\r\n    \"channelId\": 1\r\n  },\r\n  {\r\n  \t\"skuId\": 21752,\r\n    \"price\": 7000,\r\n    \"channelId\": 1\r\n  }\r\n]"
+				},
+				"description": "List the price for a SKU in authenticated store"
+			},
+			"response": []
+		},
+		{
+			"name": "Get SKU List Price",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/inventory/skuprices/2239",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n  {\r\n    \"skuId\": 15179,\r\n    \"price\": 7000,\r\n    \"channelId\": 1\r\n  },\r\n  {\r\n  \t\"skuId\": 21752,\r\n    \"price\": 7000,\r\n    \"channelId\": 1\r\n  }\r\n]"
+				},
+				"description": "List the price for a SKU in authenticated store"
+			},
+			"response": []
+		},
+		{
+			"name": "List All Groups",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/inventory/groups",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n  {\r\n    \"skuId\": 15179,\r\n    \"price\": 7000,\r\n    \"channelId\": 1\r\n  },\r\n  {\r\n  \t\"skuId\": 21752,\r\n    \"price\": 7000,\r\n    \"channelId\": 1\r\n  }\r\n]"
+				},
+				"description": "List all of the groups for sale by the authenticated store"
+			},
+			"response": []
+		},
+		{
+			"name": "List All Categories",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/inventory/categories",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n  {\r\n    \"skuId\": 15179,\r\n    \"price\": 7000,\r\n    \"channelId\": 1\r\n  },\r\n  {\r\n  \t\"skuId\": 21752,\r\n    \"price\": 7000,\r\n    \"channelId\": 1\r\n  }\r\n]"
+				},
+				"description": "List all of the groups for sale by the authenticated store"
+			},
+			"response": []
+		},
+		{
+			"name": "List Top Sold Products",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/inventory/topsales",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": "List all of the groups for sale by the authenticated store"
+			},
+			"response": []
+		},
+		{
+			"name": "Search Top Sold Products",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/inventory/topsalessearch",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"categoryId\": 1\n}"
+				},
+				"description": "Search Top Sold products"
+			},
+			"response": []
+		},
+		{
+			"name": "List Catalog Objects",
+			"request": {
+				"url": {
+					"raw": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/inventory/search?q=Ponder",
+					"protocol": "https",
+					"host": [
+						"api",
+						"tcgplayer",
+						"com"
+					],
+					"path": [
+						"{{version}}",
+						"stores",
+						"{{storeKey}}",
+						"inventory",
+						"search"
+					],
+					"query": [
+						{
+							"key": "q",
+							"value": "Ponder",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"categoryId\": 1\n}"
+				},
+				"description": "Lists all catalog objects held by store"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Order Manifest",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/orders/manifest",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"categoryId\": 1\n}"
+				},
+				"description": "Gets a search manifest for orders."
+			},
+			"response": []
+		},
+		{
+			"name": "Get Order Details",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/orders/23132-0A4D52-A147D",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"categoryId\": 1\n}"
+				},
+				"description": "Gets the details of an order."
+			},
+			"response": []
+		},
+		{
+			"name": "Get Order Feedback",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/orders/23132-0A4D52-A147D/feedback",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"categoryId\": 1\n}"
+				},
+				"description": "Returns the feedback on a specific order"
+			},
+			"response": []
+		},
+		{
+			"name": "Search Orders",
+			"request": {
+				"url": {
+					"raw": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/orders?orderNumber=23132",
+					"protocol": "https",
+					"host": [
+						"api",
+						"tcgplayer",
+						"com"
+					],
+					"path": [
+						"{{version}}",
+						"stores",
+						"{{storeKey}}",
+						"orders"
+					],
+					"query": [
+						{
+							"key": "orderNumber",
+							"value": "23132",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"categoryId\": 1\n}"
+				},
+				"description": "Searches a store's orders."
+			},
+			"response": []
+		},
+		{
+			"name": "Get Order Items",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/orders/23132-0A4D52-A147D/items",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"categoryId\": 1\n}"
+				},
+				"description": "Get the items contained in an order."
+			},
+			"response": []
+		},
+		{
+			"name": "Get Order Tracking Numbers",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/orders/23132-0A4D52-A147D/tracking",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"categoryId\": 1\n}"
+				},
+				"description": "Gets all of the tracking numbers associated with an order."
+			},
+			"response": []
+		},
+		{
+			"name": "Add Order Tracking Number",
+			"request": {
+				"url": "http://api.tcgplayer.com/{{version}}/stores/221530c9/orders/00828-07F42A-5E1A7/tracking",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n\t\"1987\"\n]"
+				},
+				"description": "Add a tracking number to an order"
+			},
+			"response": []
+		},
+		{
+			"name": "Buylist pricing",
+			"request": {
+				"url": "http://api.tcgplayer.com/{{version}}/inventory/productlists",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n\t\t{\r\n\t\t\t\"quantity\": 2,\r\n\t\t\t\"productConditionId\": 21163\r\n\t\t},\r\n\t\t{\r\n\t\t\t\"quantity\": 7,\r\n\t\t\t\"productConditionId\": 3799\r\n\t\t}\r\n]"
+				},
+				"description": "Search buylist pricing"
+			},
+			"response": []
+		},
+		{
+			"name": "Mass Entry request",
+			"request": {
+				"url": "https://store.tcgplayer.com/massentry",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "c",
+							"value": "1+Authority+of+the+Consuls%7C%7C1+Azorius+Cluestone%7C%7C1+Azorius+Signet%7C%7C1+Chromatic+Lantern%7C%7C1+Commander%27s+Sphere%7C%7C1+Darksteel+Ingot%7C%7C1+Dimir+Cluestone%7C%7C1+Dimir+Signet%7C%7C1+Ghostly+Prison%7C%7C1+Island+Sanctuary%7C%7C1+Isochron+Scepter%7C%7C1+Lightning+Greaves%7C%7C1+Mask+of+Avacyn%7C%7C1+Mind%27s+Dilation%7C%7C1+Mindslaver%7C%7C1+Obelisk+of+Esper%7C%7C1+Orzhov+Cluestone%7C%7C1+Orzhov+Signet%7C%7C1+Paradox+Engine%7C%7C1+Propaganda%7C%7C1+Rhystic+Study%7C%7C1+Scourglass%7C%7C1+Sol+Ring%7C%7C1+Swiftfoot+Boots%7C%7C1+Telepathy%7C%7C1+Temple+Bell%7C%7C1+Thran+Dynamo%7C%7C1+Arcane+Lighthouse%7C%7C1+Arcane+Sanctum%7C%7C1+Azorius+Chancery%7C%7C1+Cascading+Cataracts%7C%7C1+Caves+of+Koilos%7C%7C1+Command+Tower%7C%7C1+Dimir+Aqueduct%7C%7C1+Dismal+Backwater%7C%7C1+Drowned+Catacomb%7C%7C1+Glacial+Fortress%7C%7C1+Godless+Shrine%7C%7C1+Hallowed+Fountain%7C%7C3+Island%7C%7C1+Isolated+Chapel%7C%7C1+Maze+of+Ith%7C%7C1+Orzhov+Basilica%7C%7C3+Plains%7C%7C1+Prairie+Stream%7C%7C1+Reliquary+Tower%7C%7C1+Scoured+Barrens%7C%7C1+Sunken+Hollow%7C%7C3+Swamp%7C%7C1+Temple+of+Deceit%7C%7C1+Temple+of+Enlightenment%7C%7C1+Temple+of+Silence%7C%7C1+Tranquil+Cove%7C%7C1+Underground+River%7C%7C1+Vault+of+the+Archangel%7C%7C1+Arcanis+the+Omnipotent%7C%7C1+Avacyn%2C+Angel+of+Hope%7C%7C1+Azami%2C+Lady+of+Scrolls%7C%7C1+Clever+Impersonator%7C%7C1+Dawnglare+Invoker%7C%7C1+Diluvian+Primordial%7C%7C1+Elesh+Norn%2C+Grand+Cenobite%7C%7C1+Ethersworn+Adjudicator%7C%7C1+Exquisite+Archangel%7C%7C1+Fatespinner%7C%7C1+Galecaster+Colossus%7C%7C1+Grand+Arbiter+Augustin+IV%7C%7C1+Havengul+Lich%7C%7C1+Inkfathom+Witch%7C%7C1+Meddling+Mage%7C%7C1+Merfolk+Thaumaturgist%7C%7C1+Realmwright%7C%7C1+Sepulchral+Primordial%7C%7C1+Trophy+Mage%7C%7C1+Acquire%7C%7C1+Anguished+Unmaking%7C%7C1+Azorius+Charm%7C%7C1+Blatant+Thievery%7C%7C1+Brainstorm%7C%7C1+Bribery%7C%7C1+Counterspell%7C%7C1+Dramatic+Reversal%7C%7C1+Enlightened+Tutor%7C%7C1+Path+to+Exile%7C%7C1+Ponder%7C%7C1+Praetor%27s+Grasp%7C%7C1+Return+to+Dust%7C%7C1+Sphinx%27s+Revelation%7C%7C1+Supreme+Verdict%7C%7C1+Swords+to+Plowshares%7C%7C1+Utter+End%7C%7C1+Wrath+of+God%7C%7C1+Jace+Beleren%7C%7C",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "partner",
+							"value": "DCKSTTS",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
