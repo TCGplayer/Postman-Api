@@ -24,7 +24,7 @@ Run the request for Authenticate.
 After this is completed, you should be able to start diving in and running any of the other requests in the collection.  If you authenticated against a store, a great next step is to call Get Store Info so that you can verify that your store's information is returned correctly.
 
 # Notes
-This postman collection is currently updated for version 1.9.0 of the TCGPlayer API.  When new version come out, this section will be updated and the collection will also be updated.
+This postman collection is currently updated for version 1.9.0 of the TCGPlayer API.  When a new version come out this section will be updated and the collection will also be updated.
 
 If you have any questions please feel free to reach out on our [community forums](https://community.tcgplayer.com)!
 
