@@ -1,9 +1,9 @@
 {
 	"variables": [],
 	"info": {
-		"name": "TCGPlayer",
+		"name": "TCGplayer",
 		"_postman_id": "f36c019c-32fa-72d4-88fd-57ae2ba74dfd",
-		"description": "All of the requests usable through the current TCGPlayer API",
+		"description": "All of the requests usable through the current TCGplayer API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
 	"item": [
@@ -711,7 +711,7 @@
 					}
 				],
 				"body": {},
-				"description": "List conditions supported by TCGPlayer."
+				"description": "List conditions supported by TCGplayer."
 			},
 			"response": []
 		},
